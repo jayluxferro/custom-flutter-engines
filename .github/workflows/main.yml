@@ -59,7 +59,7 @@ jobs:
       - name: Release
         uses: softprops/action-gh-release@v1
         with:
-          token: ${{ secrets.TOKEN }}
+          token: ${{ secrets.WORKFLOW }}
           target_commitish: v2-${{env.SNAPSHOT_HASH}}
           tag_name: ios-v2-${{env.SNAPSHOT_HASH}}
           files: |
