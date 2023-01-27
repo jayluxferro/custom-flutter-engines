@@ -28,8 +28,7 @@ jobs:
           cd libplist && ./autogen.sh --without-cython && sudo make install && cd ..
           cd libusbmuxd && ./autogen.sh && sudo make install && cd ..
           xcrun --sdk macosx --show-sdk-path
-          brew install ideviceinstaller
-          brew install ios-deploy
+          brew install ideviceinstaller ios-deploy openjdk@8 ant
           pip3 install wheel
           pip3 install reflutter==0.7.2
           git clone https://chromium.googlesource.com/chromium/tools/depot_tools.git
@@ -53,14 +52,23 @@ jobs:
           reflutter ${{env.SNAPSHOT_HASH}} -l
       - name: ninja build Flutter.framework
         run: export PATH=$PATH:`pwd`/depot_tools && sudo xcode-select -s /Applications/Xcode.app && customEngine/src/flutter/tools/gn --ios --ios-cpu=arm64 --runtime-mode=release && ninja -C customEngine/src/out/ios_release
+      - name: ninja build libflutter
+        run: export PATH=$PATH:`pwd`/depot_tools && customEngine/src/flutter/tools/gn --android --android-cpu=arm64 --runtime-mode=release && ninja -C customEngine/src/out/android_release_arm64
+      - name: ninja build libflutter32
+        run: export PATH=$PATH:`pwd`/depot_tools && customEngine/src/flutter/tools/gn --android --android-cpu=arm --runtime-mode=release && ninja -C customEngine/src/out/android_release
       - name: Move to release
         run: |
          cp customEngine/src/out/ios_release/Flutter.framework/Flutter Flutter
+         cp customEngine/src/out/android_release_arm64/lib.stripped/libflutter.so libflutter_arm64.so 2>/dev/null || :
+         cp customEngine/src/out/android_release/lib.stripped/libflutter.so libflutter_arm.so 2>/dev/null || :
+         cp customEngine/src/out/android_release_x64/lib.stripped/libflutter.so libflutter_x64.so 2>/dev/null || :
+         cp customEngine/src/out/android_jit_release_x86/lib.stripped/libflutter.so libflutter_x86.so 2>/dev/null || :
       - name: Release
         uses: softprops/action-gh-release@v1
         with:
-          #target_commitish: v2-${{env.SNAPSHOT_HASH}}
-          tag_name: ios-v2-${{env.SNAPSHOT_HASH}}
+          #target_commitish: v1-${{env.SNAPSHOT_HASH}}
+          tag_name: v1-${{env.SNAPSHOT_HASH}}
           token: ${{ secrets.WORKFLOW }}
           files: |
             ./Flutter
+            ./*.so
