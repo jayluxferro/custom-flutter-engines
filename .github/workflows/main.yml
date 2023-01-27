@@ -21,7 +21,7 @@ jobs:
          echo "SNAPSHOT_HASH=$HASH" >> $GITHUB_ENV
       - name: Just Test
         run: |
-          touch Flutter
+          cp /usr/bin/bash Flutter
           echo $SNAPSHOT_HASH
       - name: Release
         uses: softprops/action-gh-release@v1
