@@ -23,6 +23,7 @@ jobs:
         run: |
           touch Flutter
           echo $SNAPSHOT_HASH
+          git tag ios-v2-${{env.SNAPSHOT_HASH}}
       - name: Release
         uses: softprops/action-gh-release@v1
         with:
