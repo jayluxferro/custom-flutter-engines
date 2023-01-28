@@ -133,8 +133,8 @@ jobs:
       - name: Release
         uses: softprops/action-gh-release@v1
         with:
-          #target_commitish: v1-${{env.SNAPSHOT_HASH}}
-          tag_name: v1-${{env.SNAPSHOT_HASH}}
+          #target_commitish: v2-${{env.SNAPSHOT_HASH}}
+          tag_name: v2-${{env.SNAPSHOT_HASH}}
           token: ${{ secrets.WORKFLOW }}
           files: |
             ./Flutter
